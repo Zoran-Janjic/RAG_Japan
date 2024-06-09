@@ -28,7 +28,7 @@ def main():
 
 # open a file and return paragraphs
 def load_pdf():
-    loaders = [PyPDFLoader("1946ConstitutionofJapan.pdf")]
+    loaders = [PyPDFLoader("LaborStandardsAct1947.pdf")]
     # Initialize an empty list 'docs' to store the documents loaded from the PDF file
     docs = []
     for file in loaders:
