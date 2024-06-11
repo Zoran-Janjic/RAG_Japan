@@ -8,10 +8,16 @@ from langchain.schema.document import Document
 from getEmbeddings import get_embedding_function
 from langchain_community.vectorstores import Chroma
 
-CHROMA_PATH = "chroma"
+# Define the path for the Chroma database
+CHROMA_PATH = "chroma_db_japanese_labor_law_1947"
 
 
 def main():
+    """
+        Main function to handle the process of loading PDF documents, splitting them into chunks,
+        and adding them to the Chroma database.
+    """
+    
     # Check if the database should be cleared (using the --clear flag).
     parser = argparse.ArgumentParser()
     parser.add_argument("--reset", action="store_true", help="Reset the database.")
@@ -26,8 +32,10 @@ def main():
     add_to_chroma(chunks)
 
 
-# open a file and return paragraphs
 def load_pdf():
+    """
+        Load PDF documents using PyPDFLoader and return a list of Document objects.
+    """
     loaders = [PyPDFLoader("LaborStandardsAct1947.pdf")]
     # Initialize an empty list 'docs' to store the documents loaded from the PDF file
     docs = []
@@ -38,8 +46,11 @@ def load_pdf():
 
 
 def split_documents(documents: list[Document]):
+    """
+        Split the documents into chunks using RecursiveCharacterTextSplitter.
+    """
     # Split the documents
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=80, length_function=len,
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100, length_function=len,
                                                    is_separator_regex=False)
     splited_docs = text_splitter.split_documents(documents)
     print(f"Split into {len(splited_docs)} chunks.")
@@ -47,6 +58,9 @@ def split_documents(documents: list[Document]):
 
 
 def add_to_chroma(chunks: list[Document]):
+    """
+        Add chunks to the Chroma database after calculating chunk IDs and checking for existing documents.
+    """
     # Load the existing database.
     db = Chroma(
         persist_directory=CHROMA_PATH, embedding_function=get_embedding_function()
@@ -76,9 +90,12 @@ def add_to_chroma(chunks: list[Document]):
 
 
 def calculate_chunk_ids(chunks):
-    # This will create IDs like "data/monopoly.pdf:6:2"
-    # Page Source : Page Number : Chunk Index
+    """
+        Calculate unique chunk IDs based on source, page, and chunk index.
 
+    """
+
+    # Page Source : Page Number : Chunk Index
     last_page_id = None
     current_chunk_index = 0
 
@@ -104,6 +121,9 @@ def calculate_chunk_ids(chunks):
 
 
 def clear_database():
+    """
+        Clear the Chroma database by deleting the specified directory.
+    """
     if os.path.exists(CHROMA_PATH):
         shutil.rmtree(CHROMA_PATH)
 
