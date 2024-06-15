@@ -6,9 +6,6 @@ from langchain_core.prompts import ChatPromptTemplate
 from getEmbeddings import get_embedding_function
 import google.generativeai as genai
 
-# Set the environment variable for the Gemini API key
-os.environ['GEMINI_API_KEY'] = 'AIzaSyBOV9SGheiOAs6YCSdO8gvYUfdsAtARCbk'
-
 
 def query_rag(query_text: str):
     """
