@@ -1,10 +1,11 @@
 import os
 
 from langchain_community.llms.ollama import Ollama
-from langchain_community.vectorstores import Chroma
+from langchain_community.vectorstores import Chroma, FAISS
 from langchain_core.prompts import ChatPromptTemplate
 from getEmbeddings import get_embedding_function
 import google.generativeai as genai
+from databaseOps import get_chunks, get_llm_response
 
 
 def query_rag(query_text: str):
@@ -18,7 +19,7 @@ def query_rag(query_text: str):
             str: The formatted response from the RAG model.
         """
 
-    CHROMA_PATH = "chroma_db_japanese_labor_law_1947"
+    # CHROMA_PATH = "chroma_db_japanese_labor_law_1947"
 
     # Define the template for the prompt
     PROMPT_TEMPLATE = """
@@ -35,31 +36,27 @@ def query_rag(query_text: str):
     Answer:
     """
 
-    # Prepare the Chroma database and embedding function
-    embedding_function = get_embedding_function()
-    db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embedding_function)
+    # db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embedding_function)
 
     # Search the Chroma database for similar documents
-    results = db.similarity_search_with_score(query_text, k=6)
+    # results = db.similarity_search_with_score(query_text, k=6)
     # print("results >>> ", results)
 
     # Get the context text from the search results
-    context_text = "\n\n---\n\n".join([doc.page_content for doc, _score in results])
+    # context_text = "\n\n---\n\n".join([doc.page_content for doc, _score in results])
 
-    # Create the prompt using the template
-    prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
-    prompt = prompt_template.format(context=context_text, question=query_text)
+    embedding_function = get_embedding_function()
 
-    model = Ollama(model="phi3")
-    response_text = model.invoke(prompt)
+    chunks = get_chunks()
 
-    # Get the sources for the search results
-    sources = [doc.metadata.get("id", None) for doc, _score in results]
+    knowledge_base = FAISS.from_texts(chunks, embedding_function)
 
-    # Format and return the response
-    formatted_response = f"{response_text}\n   > Sources: Labor Standards Act 1947"
+    if query_text:
+        retrieved_docs = knowledge_base.similarity_search(query_text)
 
-    # print("formatted_response ", formatted_response)
-    # print("response_text ", response_text)
-    #
-    return formatted_response
+        llm_response = get_llm_response(docs=retrieved_docs, userQuery=query_text)
+
+        # Format and return the response
+        formatted_response = f"{llm_response}\n   > Sources: Labor Standards Act 1947"
+
+        return formatted_response

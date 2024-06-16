@@ -7,7 +7,7 @@ def create_ui():
     This function creates the user interface for the JapanLaborAi chatbot using Streamlit.
     """
 
-    st.title("Ask JapanLaborAi")
+    st.header("Ask JapanLaborAi")
 
     st.markdown(
         """
