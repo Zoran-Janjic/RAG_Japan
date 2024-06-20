@@ -1,9 +1,15 @@
-from langchain_openai import OpenAIEmbeddings
 import os
+
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
 
 def get_embedding_function():
-    openai_api_key = os.getenv("OPENAI_API_KEY")
-    openai_model_name = "text-embedding-3-small"
-    embeddings = OpenAIEmbeddings(api_key=openai_api_key, model=openai_model_name)
-    return embeddings
+    # Retrieve the API key from the environment variable
+    google_api_key = os.getenv('GOOGLE_API_KEY')
+
+    # Check if the API key is set
+    if not google_api_key:
+        raise ValueError("Please set the GOOGLE_API_KEY environment variable")
+
+    embedding_function = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    return embedding_function
