@@ -3,16 +3,15 @@ import os
 import shutil
 
 from PyPDF2 import PdfReader
-from langchain_community.document_loaders import PyPDFDirectoryLoader, PyPDFLoader
+from langchain_community.document_loaders import PyPDFLoader
 
-from langchain_text_splitters import RecursiveCharacterTextSplitter, CharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.schema.document import Document
 from getEmbeddings import get_embedding_function
 from langchain_community.vectorstores import Chroma
 
 # Define the path for the Chroma database
 CHROMA_PATH = "chroma_db_japanese_labor_law_1947"
-DATA_PATH = "data"
 
 
 def main():
@@ -77,7 +76,7 @@ def add_to_chroma(chunks: list[Document]):
     if len(new_chunks):
         print(f"👉 Adding new documents: {len(new_chunks)}")
         new_chunk_ids = [chunk.metadata["id"] for chunk in new_chunks]
-        db.add_documents(new_chunks, ids=new_chunk_ids)
+        # print(new_chunk_ids)
 
     else:
         print("✅ No new documents to add")

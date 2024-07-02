@@ -46,6 +46,23 @@ def create_ui():
         unsafe_allow_html=True,
     )
 
+    greetings_text = """
+        Hello, ask me anything about Japan Labor Standards Act 1947.
+
+        Topics covered include:
+        - Wages
+        - Working Hours
+        - Rest periods
+        - Holidays
+        - Annual paid leave
+        - Equal treatment
+        - Discrimination
+        - Health and safety
+        - Industrial accidents
+        - Labor disputes
+        """
+
+    st.chat_message("assistant").markdown(greetings_text)
     # Initialize the chat messages in the session state if not already present
     if "messages" not in st.session_state:
         st.session_state.messages = []
