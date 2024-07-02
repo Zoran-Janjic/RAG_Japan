@@ -8,3 +8,4 @@ protobuf==4.25.3
 PyPDF2==3.0.1
 python-dotenv==1.0.1
 streamlit==1.36.0
+chromadb==0.5.0
