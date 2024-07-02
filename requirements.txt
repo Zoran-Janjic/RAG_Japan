@@ -54,7 +54,8 @@ jupyter_client==8.6.2
 jupyter_core==5.7.2
 jupyterlab_pygments==0.3.0
 kubernetes==30.1.0
-langchain-core==0.2.9
+langchain-community==0.0.37
+langchain-core==0.1.52
 langchain-google-genai>=1.0.3
 langchain-openai==0.1.8
 markdown-it-py==3.0.0
